@@ -3,6 +3,16 @@ import { useState } from "react";
 export default function ResumeBuilder() {
   const [info, setInfo] = useState({ name: "", title: "", email: "", phone: "", location: "", summary: "", skills: "" });
   const set = (k) => (e) => setInfo(p => ({ ...p, [k]: e.target.value }));
+  const [education, setEducation] = useState([]);
+  const [addingEdu, setAddingEdu] = useState(false);
+  const [eduForm, setEduForm] = useState({ school: "", degree: "", period: "" });
+  
+  const addEdu = () => {
+    if (!eduForm.school) return;
+    setEducation(p => [...p, { ...eduForm, id: Date.now() }]);
+    setEduForm({ school: "", degree: "", period: "" });
+    setAddingEdu(false);
+  };
   return (
     <div>
       <div className="page-title">
@@ -88,6 +98,53 @@ export default function ResumeBuilder() {
             </div>
           </div>
         </div>
+        
+          <div className="form-card">
+            <div className="section-actions">
+              <div className="form-section-title" style={{ marginBottom: 0, paddingBottom: 0, border: "none" }}>Education</div>
+              {!addingEdu && <button className="btn btn-ghost btn-sm" onClick={() => setAddingEdu(true)}>+ Add</button>}
+            </div>
+
+            {addingEdu && (
+              <div style={{ marginTop: 14, background: "var(--paper)", borderRadius: 8, padding: 14, border: "1.5px solid var(--border)" }}>
+                <div className="form-row" style={{ marginBottom: 10 }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">School</label>
+                    <input className="form-input" placeholder="MIT" value={eduForm.school} onChange={e => setEduForm(p => ({ ...p, school: e.target.value }))} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Degree</label>
+                    <input className="form-input" placeholder="B.S. Computer Science" value={eduForm.degree} onChange={e => setEduForm(p => ({ ...p, degree: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Period</label>
+                  <input className="form-input" placeholder="2018 – 2022" value={eduForm.period} onChange={e => setEduForm(p => ({ ...p, period: e.target.value }))} />
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button className="btn btn-primary btn-sm" onClick={addEdu}>Save</button>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setAddingEdu(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+
+            {/* Education */}
+            {education.length > 0 && (
+              <div className="entries-list" style={{ marginTop: 12 }}>
+                {education.map(e => (
+                  <div key={e.id} className="entry-item">
+                    <div className="entry-item-header">
+                      <div>
+                        <div className="entry-item-title">{e.degree}</div>
+                        <div className="entry-item-sub">{e.school} · {e.period}</div>
+                      </div>
+                      <button className="remove-btn" onClick={() => setEducation(p => p.filter(x => x.id !== e.id))}>×</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
       </div>
     </div>
   );
