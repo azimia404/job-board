@@ -4,7 +4,10 @@ export default function ResumeBuilder() {
   const [info, setInfo] = useState({ name: "", title: "", email: "", phone: "", location: "", summary: "", skills: "" });
   const set = (k) => (e) => setInfo(p => ({ ...p, [k]: e.target.value }));
   const [education, setEducation] = useState([]);
+  const [experience, setExperience] = useState([]);
   const [addingEdu, setAddingEdu] = useState(false);
+  const [addingExp, setAddingExp] = useState(false);
+  const [expForm, setExpForm] = useState({ company: "", role: "", period: "", desc: "" });
   const [eduForm, setEduForm] = useState({ school: "", degree: "", period: "" });
   
   const addEdu = () => {
@@ -12,6 +15,12 @@ export default function ResumeBuilder() {
     setEducation(p => [...p, { ...eduForm, id: Date.now() }]);
     setEduForm({ school: "", degree: "", period: "" });
     setAddingEdu(false);
+  };
+  const addExp = () => {
+    if (!expForm.company) return;
+    setExperience(p => [...p, { ...expForm, id: Date.now() }]);
+    setExpForm({ company: "", role: "", period: "", desc: "" });
+    setAddingExp(false);
   };
   return (
     <div>
@@ -97,8 +106,7 @@ export default function ResumeBuilder() {
               />
             </div>
           </div>
-        </div>
-        
+          {/* Education */}
           <div className="form-card">
             <div className="section-actions">
               <div className="form-section-title" style={{ marginBottom: 0, paddingBottom: 0, border: "none" }}>Education</div>
@@ -128,7 +136,6 @@ export default function ResumeBuilder() {
               </div>
             )}
 
-            {/* Education */}
             {education.length > 0 && (
               <div className="entries-list" style={{ marginTop: 12 }}>
                 {education.map(e => (
@@ -145,6 +152,58 @@ export default function ResumeBuilder() {
               </div>
             )}
           </div>
+          {/* Experience */}
+          <div className="form-card">
+              <div className="section-actions">
+                <div className="form-section-title">Experience</div>
+              </div>
+              {addingExp && (
+                <div style={{ marginTop: 14, background: "var(--paper)", borderRadius: 8, padding: 14, border: "1.5px solid var(--border)" }}>
+                  <div className="form-row" style={{ marginBottom: 10 }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Company</label>
+                      <input className="form-input" placeholder="Google" value={expForm.company} onChange={e => setExpForm(p => ({ ...p, company: e.target.value }))} />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Role</label>
+                      <input className="form-input" placeholder="Software Engineer" value={expForm.role} onChange={e => setExpForm(p => ({ ...p, role: e.target.value }))} />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Period</label>
+                      <input className="form-input" placeholder="2022 – Present" value={expForm.period} onChange={e => setExpForm(p => ({ ...p, period: e.target.value }))} />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Description</label>
+                      <textarea className="form-textarea" style={{ minHeight: 60 }} placeholder="What did you do?" value={expForm.desc} onChange={e => setExpForm(p => ({ ...p, desc: e.target.value }))} />
+                    </div>
+                  </div>
+                  <div style={{display: "flex", gap: 8}}>
+                    <button className="btn btn-primary btn-sm" onClick={addExp}>Save</button>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setAddingExp(false)}>Cancel</button>
+                  </div>
+                </div>
+              )}
+
+              {experience.length > 0 && (
+                <div className="entries-list" style={{ marginTop: 12 }}>
+                  {experience.map(e => (
+                    <div key={e.id} className="entry-item">
+                      <div className="entry-item-header">
+                        <div>
+                          <div className="entry-item-title">{e.role}</div>
+                          <div className="entry-item-sub">{e.company} · {e.period}</div>
+                        </div>
+                        <button className="remove-btn" onClick={() => setExperience(p => p.filter(x => x.id !== e.id))}>×</button>
+                      </div>
+                    </div>
+                    ))}
+                </div>
+              )}
+              {!addingExp && <button className="btn btn-ghost btn-sm" onClick={() => setAddingExp(true)}>+ Add</button>}
+          </div>
+        </div>
+        
+          
       </div>
     </div>
   );
