@@ -2,7 +2,6 @@ import { useState } from "react";
 // ────────── RESUME BUILDER ──────────
 export default function ResumeBuilder() {
   const [info, setInfo] = useState({ name: "", title: "", email: "", phone: "", location: "", summary: "", skills: "" });
-  const set = (k) => (e) => setInfo(p => ({ ...p, [k]: e.target.value }));
   const [education, setEducation] = useState([]);
   const [experience, setExperience] = useState([]);
   const [addingEdu, setAddingEdu] = useState(false);
@@ -10,6 +9,10 @@ export default function ResumeBuilder() {
   const [expForm, setExpForm] = useState({ company: "", role: "", period: "", desc: "" });
   const [eduForm, setEduForm] = useState({ school: "", degree: "", period: "" });
   
+  const set = (k) => (e) => setInfo(p => ({ ...p, [k]: e.target.value }));
+  const skills = info.skills.split(",").map(s => s.trim()).filter(Boolean);
+  const hasContent = info.name || info.title || info.summary || experience.length || education.length || skills.length;
+
   const addEdu = () => {
     if (!eduForm.school) return;
     setEducation(p => [...p, { ...eduForm, id: Date.now() }]);
@@ -203,7 +206,67 @@ export default function ResumeBuilder() {
           </div>
         </div>
         
-          
+        <div>
+          <div className="resume-preview">
+            {!hasContent ? (
+              <div className="empty">
+                <div className="empty-icon">???</div>
+                <div style={{ fontFamily: "Playfair Display, serif", fontSize: 18, marginBottom: 6 }}>Your resume preview</div>
+                <div style={{ fontSize: 13 }}>Start filling in the form to see your resume here</div>
+              </div>
+            ) : (
+              <>
+                {info.name && <div className="preview-name">{info.name}</div>}
+                {info.title && <div className="preview-title">{info.title}</div>}
+                {(info.email || info.phone || info.location) && (
+                  <div className="preview-contact">
+                    {info.email && <span>{info.email}</span>}
+                    {info.phone && <span>{info.phone}</span>}
+                    {info.location && <span>{info.location}</span>} 
+                  </div>
+                )}
+
+                {info.summary && (
+                  <div className="preview-section">
+                    <div className="preview-section-title">Summary</div>
+                    <p style={{fontSize: 12, color: "#444"}}>{info.summary}</p>
+                  </div>
+                )}
+
+                {experience.length > 0 && (
+                  <div className="preview-section">
+                    <div className="preview-section-title">Experience</div>
+                    {experience.map((e, i) => (
+                      <div key={e.id} style={{ marginBottom: i < experience.length - 1 ? 12 : 0 }}>
+                        <div className="preview-entry-header">
+                          <div className="preview-entry-title">{e.role}</div>
+                          <div className="preview-entry-date">{e.period}</div>
+                        </div>
+                        <div className="preview-entry-company">{e.company}</div>
+                        {e.desc && <div className="preview-entry-desc">{e.desc}</div>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {education.length > 0 && (
+                  <div className="preview-section">
+                    <div className="preview-section-title">Education</div>
+                    {education.map((e, i) => (
+                      <div key={e.id} style={{ marginBottom: i < education.length - 1 ? 10 : 0 }}>
+                        <div className="preview-entry-header">
+                          <div className="preview-entry-title">{e.degree}</div>
+                          <div className="preview-entry-date">{e.period}</div>
+                        </div>
+                        <div className="preview-entry-company">{e.school}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+             )}
+          </div>
+        </div>
       </div>
     </div>
   );
