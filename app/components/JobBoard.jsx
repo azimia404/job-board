@@ -20,7 +20,23 @@ export default function JobBoard() {
   const [toast, setToast] = useState(null);
   const [form, setForm] = useState({ company: "", title: "", type: "Full-time", location: "", salary: "", category: "Engineering" });
 
+  const filtered = category === "All" ? jobs : jobs.filter(j => j.category === category);
+
   const setF = k => e => setForm(p => ({ ...p, [k]: e.target.value }));
+
+  const postJob = () => {
+    if (!form.title || !form.company) return;
+    const newJob = { ...form, id: Date.now(), date: "Just now" };
+    setJobs(p => [newJob, ...p]);
+    setForm({ company: "", title: "", type: "Full-time", location: "", salary: "", category: "Engineering" });
+    setShowModal(false);
+    showToast("Job posted successfully!");
+  };
+
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  };
 
   return (
     <div>
@@ -33,17 +49,90 @@ export default function JobBoard() {
           + Post a Job
         </button>
       </div>
-      <div className="jobs-grid">
-        {jobs.map(job => (
-          <div className="job-card" key={job.id}>
-            <h3>{job.title}</h3>
-            <p>{job.company}</p>
-            <p>{job.location}</p>
-            <p>{job.salary}</p>
-            <p>{job.date}</p>
-          </div>
+
+      <div className="filters">
+        {CATEGORIES.map(c => (
+          <button key={c} className={`filter-chip ${category === c ? "active" : ""}`} onClick={() => setCategory(c)}>{c}</button>
         ))}
       </div>
+
+      {filtered.length === 0 ? (
+        <div className="empty">
+          <div className="empty-icon">🔍</div>
+          <div style={{ fontFamily: "Playfair Display, serif", fontSize: 18 }}>No jobs in this category</div>
+        </div>
+      ) : (
+        <div className="jobs-grid">
+          {filtered.map(job => (
+            <div key={job.id} className="job-card">
+              <div>
+                <div className="job-card-company">{job.company}</div>
+                <div className="job-card-title">{job.title}</div>
+                <div className="job-card-tags">
+                  <span className="job-tag tag-type">{job.type}</span>
+                  {job.salary && <span className="job-tag tag-salary">{job.salary}</span>}
+                  {job.location && <span className="job-tag tag-location">📍 {job.location}</span>}
+                </div>
+              </div>
+              <div className="job-card-right">
+                <div className="job-card-date">{job.date}</div>
+                <button className="job-card-apply" onClick={() => showToast(`Applied to ${job.title}!`)}>Apply →</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showModal && (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowModal(false)}>
+          <div className="modal">
+            <div className="modal-title">Post a Job</div>
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Company</label>
+                <input className="form-input" placeholder="Acme Inc." value={form.company} onChange={setF("company")} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Job Title</label>
+                <input className="form-input" placeholder="Senior Engineer" value={form.title} onChange={setF("title")} />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Type</label>
+                <select className="form-input" value={form.type} onChange={setF("type")}>
+                  <option>Full-time</option>
+                  <option>Part-time</option>
+                  <option>Contract</option>
+                  <option>Internship</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Category</label>
+                <select className="form-input" value={form.category} onChange={setF("category")}>
+                  {CATEGORIES.filter(c => c !== "All").map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Location</label>
+                <input className="form-input" placeholder="Remote / City" value={form.location} onChange={setF("location")} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Salary Range</label>
+                <input className="form-input" placeholder="$100k–$130k" value={form.salary} onChange={setF("salary")} />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={postJob}>Post Job</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && <div className="toast">{toast}</div>}
     </div>
   );
 }
