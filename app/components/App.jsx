@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import JobBoard from "./JobBoard";
-import ResumeBuilder from "./ResumeBuilder.jsx";
+import ResumeBuilder from "./ResumeBuilder";
 // ────────── APP ──────────
 export default function App() {
   const [tab, setTab] = useState("resume");
