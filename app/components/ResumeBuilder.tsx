@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { useRef } from "react";
+import generatePDF from "react-to-pdf";
 
 interface ResumeInfo {
   name: string;
@@ -125,8 +127,14 @@ export default function ResumeBuilder() {
     setAddingExp,
     addExp,
     setEducation,
-    setExperience
+    setExperience,
   } = useResumeBuilder();
+
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPDF = () => {
+    generatePDF(previewRef, { filename: `${info.name || "resume"}.pdf` });
+  };
 
   return (
     <div>
@@ -426,8 +434,8 @@ export default function ResumeBuilder() {
           </div>
         </div>
 
-        <div>
-          <div className="resume-preview">
+        <div className="sticky top-10">
+          <div className="resume-preview" ref={previewRef}>
             {!hasContent ? (
               <div className="empty">
                 <div className="empty-icon">???</div>
@@ -490,6 +498,29 @@ export default function ResumeBuilder() {
                   </div>
                 )}
 
+                {experience.length > 0 && (
+                  <div className="preview-section">
+                    <div className="preview-section-title">Experience</div>
+                    {experience.map((e, i) => (
+                      <div
+                        key={e.id}
+                        style={{
+                          marginBottom: i < experience.length - 1 ? 12 : 0,
+                        }}
+                      >
+                        <div className="preview-entry-header">
+                          <div className="preview-entry-title">{e.role}</div>
+                          <div className="preview-entry-date">{e.period}</div>
+                        </div>
+                        <div className="preview-entry-company">{e.company}</div>
+                        {e.desc && (
+                          <div className="preview-entry-desc">{e.desc}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {education.length > 0 && (
                   <div className="preview-section">
                     <div className="preview-section-title">Education</div>
@@ -512,6 +543,15 @@ export default function ResumeBuilder() {
               </>
             )}
           </div>
+
+          <button
+            className="btn btn-ghost"
+            style={{ marginTop: 16 }}
+            onClick={handleDownloadPDF}
+            disabled={!hasContent}
+          >
+            Download PDF
+          </button>
         </div>
       </div>
     </div>
