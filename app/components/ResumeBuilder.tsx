@@ -475,6 +475,19 @@ export default function ResumeBuilder() {
                   </div>
                 )}
 
+                {info.skills.length > 0 && (
+                  <div className="preview-section">
+                    <div className="preview-section-title">Skills</div>
+                    <div className="preview-skills">
+                      {info.skills.split(',').map((skill: string, i: number ) => (
+                        <div key={i} className="preview-skill">
+                          {skill}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {experience.length > 0 && (
                   <div className="preview-section">
                     <div className="preview-section-title">Experience</div>
