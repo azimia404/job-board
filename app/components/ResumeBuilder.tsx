@@ -511,29 +511,6 @@ export default function ResumeBuilder() {
                   </div>
                 )}
 
-                {experience.length > 0 && (
-                  <div className="preview-section">
-                    <div className="preview-section-title">Experience</div>
-                    {experience.map((e, i) => (
-                      <div
-                        key={e.id}
-                        style={{
-                          marginBottom: i < experience.length - 1 ? 12 : 0,
-                        }}
-                      >
-                        <div className="preview-entry-header">
-                          <div className="preview-entry-title">{e.role}</div>
-                          <div className="preview-entry-date">{e.period}</div>
-                        </div>
-                        <div className="preview-entry-company">{e.company}</div>
-                        {e.desc && (
-                          <div className="preview-entry-desc">{e.desc}</div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 {education.length > 0 && (
                   <div className="preview-section">
                     <div className="preview-section-title">Education</div>
