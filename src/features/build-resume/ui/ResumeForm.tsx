@@ -1,0 +1,329 @@
+import { ResumeInfo, EducationEntry, ExperienceEntry } from "@/shared/types";
+
+interface ResumeFormProps {
+  info: ResumeInfo;
+  set: (
+    key: keyof ResumeInfo,
+  ) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  eduForm: Omit<EducationEntry, "id">;
+  setEduForm: React.Dispatch<React.SetStateAction<Omit<EducationEntry, "id">>>;
+  addingEdu: boolean;
+  setAddingEdu: (adding: boolean) => void;
+  experience: ExperienceEntry[];
+  setExperience: React.Dispatch<React.SetStateAction<ExperienceEntry[]>>;
+  education: EducationEntry[];
+  setEducation: React.Dispatch<React.SetStateAction<EducationEntry[]>>;
+  addEdu: () => void;
+  expForm: Omit<ExperienceEntry, "id">;
+  setExpForm: React.Dispatch<React.SetStateAction<Omit<ExperienceEntry, "id">>>;
+  addingExp: boolean;
+  setAddingExp: (adding: boolean) => void;
+  addExp: () => void;
+}
+
+export function ResumeForm({
+  info,
+  set,
+  eduForm,
+  setEduForm,
+  addingEdu,
+  setAddingEdu,
+  experience,
+  setExperience,
+  education,
+  setEducation,
+  addEdu,
+  expForm,
+  setExpForm,
+  addingExp,
+  setAddingExp,
+  addExp,
+}: ResumeFormProps) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {/* Personal Info */}
+      <div className="form-card">
+        <div className="form-section-title">Personal Info</div>
+        <div className="form-row">
+          <div className="form-group">
+            <label className="form-label">Full Name</label>
+            <input
+              className="form-input"
+              placeholder="Jane Smith"
+              value={info.name}
+              onChange={set("name")}
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Job Title</label>
+            <input
+              className="form-input"
+              placeholder="Product Designer"
+              value={info.title}
+              onChange={set("title")}
+            />
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input
+              className="form-input"
+              placeholder="jane@email.com"
+              value={info.email}
+              onChange={set("email")}
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Phone</label>
+            <input
+              className="form-input"
+              placeholder="+1 234 567 8900"
+              value={info.phone}
+              onChange={set("phone")}
+            />
+          </div>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Location</label>
+          <input
+            className="form-input"
+            placeholder="San Francisco, CA"
+            value={info.location}
+            onChange={set("location")}
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Summary</label>
+          <textarea
+            className="form-textarea"
+            placeholder="Brief professional summary..."
+            value={info.summary}
+            onChange={set("summary")}
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Skills (comma-separated)</label>
+          <input
+            className="form-input"
+            placeholder="React, TypeScript, Figma"
+            value={info.skills}
+            onChange={set("skills")}
+          />
+        </div>
+      </div>
+      {/* Education */}
+      <div className="form-card">
+        <div className="section-actions">
+          <div
+            className="form-section-title"
+            style={{ marginBottom: 0, paddingBottom: 0, border: "none" }}
+          >
+            Education
+          </div>
+          {!addingEdu && (
+            <button
+              className="btn btn-ghost btn-sm"
+              onClick={() => setAddingEdu(true)}
+            >
+              + Add
+            </button>
+          )}
+        </div>
+
+        {addingEdu && (
+          <div
+            style={{
+              marginTop: 14,
+              background: "var(--paper)",
+              borderRadius: 8,
+              padding: 14,
+              border: "1.5px solid var(--border)",
+            }}
+          >
+            <div className="form-row" style={{ marginBottom: 10 }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">School</label>
+                <input
+                  className="form-input"
+                  placeholder="MIT"
+                  value={eduForm.school}
+                  onChange={(e) =>
+                    setEduForm((p) => ({ ...p, school: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Degree</label>
+                <input
+                  className="form-input"
+                  placeholder="B.S. Computer Science"
+                  value={eduForm.degree}
+                  onChange={(e) =>
+                    setEduForm((p) => ({ ...p, degree: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Period</label>
+              <input
+                className="form-input"
+                placeholder="2018 – 2022"
+                value={eduForm.period}
+                onChange={(e) =>
+                  setEduForm((p) => ({ ...p, period: e.target.value }))
+                }
+              />
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn btn-primary btn-sm" onClick={addEdu}>
+                Save
+              </button>
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={() => setAddingEdu(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {education.length > 0 && (
+          <div className="entries-list" style={{ marginTop: 12 }}>
+            {education.map((e) => (
+              <div key={e.id} className="entry-item">
+                <div className="entry-item-header">
+                  <div>
+                    <div className="entry-item-title">{e.degree}</div>
+                    <div className="entry-item-sub">
+                      {e.school} · {e.period}
+                    </div>
+                  </div>
+                  <button
+                    className="remove-btn"
+                    onClick={() =>
+                      setEducation((p) => p.filter((x) => x.id !== e.id))
+                    }
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Experience */}
+      <div className="form-card">
+        <div className="section-actions">
+          <div className="form-section-title">Experience</div>
+        </div>
+        {addingExp && (
+          <div
+            style={{
+              marginTop: 14,
+              background: "var(--paper)",
+              borderRadius: 8,
+              padding: 14,
+              border: "1.5px solid var(--border)",
+            }}
+          >
+            <div className="form-row" style={{ marginBottom: 10 }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Company</label>
+                <input
+                  className="form-input"
+                  placeholder="Google"
+                  value={expForm.company}
+                  onChange={(e) =>
+                    setExpForm((p) => ({ ...p, company: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Role</label>
+                <input
+                  className="form-input"
+                  placeholder="Software Engineer"
+                  value={expForm.role}
+                  onChange={(e) =>
+                    setExpForm((p) => ({ ...p, role: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Period</label>
+                <input
+                  className="form-input"
+                  placeholder="2022 – Present"
+                  value={expForm.period}
+                  onChange={(e) =>
+                    setExpForm((p) => ({ ...p, period: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Description</label>
+                <textarea
+                  className="form-textarea"
+                  style={{ minHeight: 60 }}
+                  placeholder="What did you do?"
+                  value={expForm.desc}
+                  onChange={(e) =>
+                    setExpForm((p) => ({ ...p, desc: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn btn-primary btn-sm" onClick={addExp}>
+                Save
+              </button>
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={() => setAddingExp(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {experience.length > 0 && (
+          <div className="entries-list" style={{ marginTop: 12 }}>
+            {experience.map((e) => (
+              <div key={e.id} className="entry-item">
+                <div className="entry-item-header">
+                  <div>
+                    <div className="entry-item-title">{e.role}</div>
+                    <div className="entry-item-sub">
+                      {e.company} · {e.period}
+                    </div>
+                  </div>
+                  <button
+                    className="remove-btn"
+                    onClick={() =>
+                      setExperience((p) => p.filter((x) => x.id !== e.id))
+                    }
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {!addingExp && (
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => setAddingExp(true)}
+          >
+            + Add
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
