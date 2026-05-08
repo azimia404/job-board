@@ -133,7 +133,21 @@ export default function ResumeBuilder() {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadPDF = () => {
-    generatePDF(previewRef, { filename: `${info.name || "resume"}.pdf` });
+    generatePDF(previewRef, {
+      filename: `${info.name || "resume"}.pdf`,
+      page: { margin: 10, format: "a4" },
+      overrides: {
+        canvas: {
+          onclone: (_: Document, el: HTMLElement) => {
+            el.style.border = "none";
+            el.style.boxShadow = "none";
+            el.style.borderRadius = "0";
+            el.style.padding = "32px";
+            el.style.width = "100%";
+          },
+        },
+      },
+    });
   };
 
   return (
