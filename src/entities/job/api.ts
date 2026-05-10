@@ -1,26 +1,26 @@
 import { supabase } from "@/shared/api/supabase";
 import { Job, CreateJobDto } from "@/shared/types";
+const API = "http://localhost:5000";
 
 export async function fetchJobs(): Promise<{ data: Job[]; error: string | null }> {
-  const { data, error } = await supabase
-    .from("jobs")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) return { data: [], error: "Ошибка загрузки вакансий" };
-  return { data: (data as Job[]) ?? [], error: null };
+  try {
+    const res = await fetch(`${API}/jobs`);
+    const data = await res.json();
+    return { data, error: null };
+  } catch {
+    return { data: [], error: "Ошибка загрузки вакансий" };
+  }
 }
 
 export async function insertJob(dto: CreateJobDto): Promise<boolean> {
-  const { error } = await supabase.from("jobs").insert([dto]);
-  return !error;
-}
-
-export function subscribeToJobs(onUpdate: () => void) {
-  const channel = supabase
-    .channel("jobs-realtime")
-    .on("postgres_changes", { event: "*", schema: "public", table: "jobs" }, onUpdate)
-    .subscribe();
-
-  return () => supabase.removeChannel(channel);
+  try {
+    const res = await fetch(`${API}/jobs`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dto)
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }

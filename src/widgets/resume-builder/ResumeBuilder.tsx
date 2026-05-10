@@ -1,7 +1,11 @@
 "use client";
 import { useRef } from "react";
 import generatePDF from "react-to-pdf";
-import { useResumeBuilder, ResumePreview, ResumeForm} from "@/features/build-resume";
+import {
+  useResumeBuilder,
+  ResumePreview,
+  ResumeForm,
+} from "@/features/build-resume";
 
 export function ResumeBuilder() {
   const {
@@ -29,15 +33,21 @@ export function ResumeBuilder() {
   const handleDownloadPDF = () => {
     generatePDF(previewRef, {
       filename: `${info.name || "resume"}.pdf`,
-      page: { margin: 10, format: "a4" },
+      page: { margin: 0, format: "a4" },
       overrides: {
+        pdf: {
+          compress: true,
+        },
         canvas: {
+          scale: 3,
           onclone: (_: Document, el: HTMLElement) => {
             el.style.border = "none";
             el.style.boxShadow = "none";
             el.style.borderRadius = "0";
-            el.style.padding = "32px";
-            el.style.width = "100%";
+            el.style.padding = "40px";
+            el.style.width = "794px";
+            el.style.height = "auto";
+            el.style.overflow = "visible";
           },
         },
       },

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Job, CreateJobDto} from "@/shared/types";
-import { fetchJobs, insertJob, subscribeToJobs } from "@/entities/job";
+import { Job, CreateJobDto } from "@/shared/types";
+import { fetchJobs, insertJob } from "@/entities/job";
 
 export function useJobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -18,13 +18,13 @@ export function useJobs() {
 
   useEffect(() => {
     loadJobs();
-    const unsubscribe = subscribeToJobs(loadJobs);
-    return unsubscribe;
   }, [loadJobs]);
 
   const createJob = useCallback(async (dto: CreateJobDto): Promise<boolean> => {
-    return insertJob(dto);
-  }, []);
+    const ok = await insertJob(dto);
+    if (ok) loadJobs();
+    return ok;
+  }, [loadJobs]);
 
   return { jobs, loading, error, createJob };
 }

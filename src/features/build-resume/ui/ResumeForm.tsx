@@ -1,5 +1,16 @@
 import { ResumeInfo, EducationEntry, ExperienceEntry } from "@/shared/types";
 
+
+// ######################################
+// ######################################
+// ######################################
+// This is shitty and i need to remake it
+// This is shitty and i need to remake it
+// This is shitty and i need to remake it
+// ######################################
+// ######################################
+// ######################################
+
 interface ResumeFormProps {
   info: ResumeInfo;
   set: (

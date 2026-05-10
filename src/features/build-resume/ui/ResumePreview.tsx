@@ -41,7 +41,7 @@ export function ResumePreview({ info, education, experience, hasContent, preview
           {info.summary && (
             <div className="preview-section">
               <div className="preview-section-title">Summary</div>
-              <p style={{ fontSize: 12, color: "#444" }}>{info.summary}</p>
+              <p style={{ fontSize: 12, color: "#444", whiteSpace: "break-spaces" }}>{info.summary}</p>
             </div>
           )}
 
