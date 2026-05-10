@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Job Board & Resume Builder
+
+A full-stack web application that combines a job listing board with a resume builder tool. Built with Next.js on the frontend and Python Flask + SQLite on the backend.
+
+## Features
+
+### Job Board
+- Browse open job positions with category filtering
+- Post new jobs via a modal form
+- Filter by category: Engineering, Design, Marketing, Product
+- Real-time job count display
+- Toast notifications on actions
+
+### Resume Builder
+- Fill in personal info, experience, and education
+- Live resume preview as you type
+- Add and remove multiple experience and education entries
+- Download resume as PDF (A4 format)
+
+## Tech Stack
+
+**Frontend**
+- Next.js (App Router)
+- TypeScript
+- Feature-Sliced Design (FSD) architecture
+
+**Backend**
+- Python 3
+- Flask
+- SQLite
+
+## Project Structure
+
+```
+job-board/
+├── src/
+│   ├── app/
+│   ├── entities/
+│   ├── features/
+│   └── shared/
+├── backend/
+│   ├── app.py
+│   └── db.sqlite3
+├── public/
+└── README.md
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
+- Python 3.7+
+- pip
+
+### Frontend Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Opens at `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Backend Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd backend
+pip install flask flask-cors
+python app.py
+```
 
-## Learn More
+Runs at `http://localhost:5000`
 
-To learn more about Next.js, take a look at the following resources:
+> Both servers must be running at the same time.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/jobs` | Get all job listings |
+| POST | `/jobs` | Create a new job listing |
 
-## Deploy on Vercel
+### POST `/jobs` — Request Body
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```json
+{
+  "title": "Frontend Developer",
+  "company": "Acme Corp",
+  "type": "Full-time",
+  "location": "Remote",
+  "salary": "$80,000",
+  "category": "Engineering"
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Database
+
+SQLite database is created automatically on first run. Schema:
+
+```sql
+CREATE TABLE jobs (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    title     TEXT,
+    company   TEXT,
+    type      TEXT,
+    location  TEXT,
+    salary    TEXT,
+    category  TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+```
+
+To reset the database, delete `backend/db.sqlite3` and restart the server.
+
+## Job Types
+`Full-time` · `Part-time` · `Contract` · `Internship`
+
+## Job Categories
+`Engineering` · `Design` · `Marketing` · `Product`
