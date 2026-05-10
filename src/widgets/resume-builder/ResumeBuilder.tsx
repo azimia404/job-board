@@ -6,12 +6,13 @@ import {
   ResumePreview,
   ResumeForm,
 } from "@/features/build-resume";
+import { useAuth } from "@/features/auth";
 
 export function ResumeBuilder() {
+  const { user } = useAuth();
   const {
     info,
     set,
-    skills,
     hasContent,
     education,
     eduForm,
@@ -27,6 +28,8 @@ export function ResumeBuilder() {
     addExp,
     setEducation,
     setExperience,
+    save,
+    saving,
   } = useResumeBuilder();
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -35,9 +38,7 @@ export function ResumeBuilder() {
       filename: `${info.name || "resume"}.pdf`,
       page: { margin: 0, format: "a4" },
       overrides: {
-        pdf: {
-          compress: true,
-        },
+        pdf: { compress: true },
         canvas: {
           scale: 3,
           onclone: (_: Document, el: HTMLElement) => {
@@ -54,6 +55,8 @@ export function ResumeBuilder() {
     });
   };
 
+  const content = hasContent as string | number;
+
   return (
     <div>
       <div className="page-title">
@@ -65,7 +68,6 @@ export function ResumeBuilder() {
         Fill in your details, add experience — get a clean resume preview.
       </p>
       <div className="resume-layout">
-        {/* FORM */}
         <ResumeForm
           info={info}
           set={set}
@@ -83,24 +85,34 @@ export function ResumeBuilder() {
           addingExp={addingExp}
           setAddingExp={setAddingExp}
           addExp={addExp}
-        ></ResumeForm>
+        />
 
         <div className="sticky top-10">
           <ResumePreview
             info={info}
             education={education}
             experience={experience}
-            hasContent={hasContent}
+            hasContent={content}
             previewRef={previewRef}
           />
-          <button
-            className="btn btn-ghost"
-            style={{ marginTop: 16 }}
-            onClick={handleDownloadPDF}
-            disabled={!hasContent}
-          >
-            Download PDF
-          </button>
+          <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+            <button
+              className="btn btn-ghost"
+              onClick={handleDownloadPDF}
+              disabled={!hasContent}
+            >
+              Download PDF
+            </button>
+            {user && (
+              <button
+                className="btn btn-primary"
+                onClick={save}
+                disabled={saving || !hasContent}
+              >
+                {saving ? "Saving…" : "Save"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -2,7 +2,35 @@
 import { useState } from "react";
 import { JobBoard } from "../widgets/job-board";
 import { ResumeBuilder } from "@/widgets/resume-builder";
-export default function App() {
+import { AuthProvider, useAuth, AuthModal } from "@/features/auth";
+import { ResumeProvider } from "@/features/build-resume";
+
+function NavAuth() {
+  const { user, logout } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  if (user) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <span style={{ fontSize: 13, color: "var(--muted)" }}>{user.email}</span>
+        <button className="btn btn-ghost btn-sm" onClick={logout}>
+          Log out
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <button className="btn btn-ghost btn-sm" onClick={() => setShowAuthModal(true)}>
+        Sign in
+      </button>
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+    </>
+  );
+}
+
+function AppInner() {
   const [tab, setTab] = useState("resume");
 
   return (
@@ -26,10 +54,21 @@ export default function App() {
               Job Board
             </button>
           </div>
+          <NavAuth />
         </nav>
 
         {tab === "resume" ? <ResumeBuilder /> : <JobBoard />}
       </div>
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <ResumeProvider>
+        <AppInner />
+      </ResumeProvider>
+    </AuthProvider>
   );
 }

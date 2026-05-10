@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ResumeInfo } from "@/shared/types";
 export function usePersonalInfo() {
   const [info, setInfo] = useState<ResumeInfo>({
@@ -14,6 +14,7 @@ export function usePersonalInfo() {
     (k: keyof ResumeInfo) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setInfo((p) => ({ ...p, [k]: e.target.value }));
+  const loadInfo = useCallback((newInfo: ResumeInfo) => setInfo(newInfo), []);
   const skills = info.skills.split(",").map(s => s.trim()).filter(Boolean);
-  return { info, set, skills };
+  return { info, set, loadInfo, skills };
 }
