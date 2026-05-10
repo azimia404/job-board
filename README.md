@@ -17,6 +17,9 @@ A full-stack web application that combines a job listing board with a resume bui
 - Add and remove multiple experience and education entries
 - Download resume as PDF (A4 format)
 
+### Screenshots and Examples
+- See at /screenshots
+
 ## Tech Stack
 
 **Frontend**
