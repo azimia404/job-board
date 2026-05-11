@@ -1,5 +1,7 @@
 # Job Board & Resume Builder
 
+Link for feedback: https://drive.google.com/file/d/1RKleykh_LHnI3tMiEJzwdHIF6z6rL09I/view?usp=sharing
+
 A full-stack web application that combines a job listing board with a resume builder tool. Built with Next.js on the frontend and Python Flask + SQLite on the backend.
 
 ## Features
